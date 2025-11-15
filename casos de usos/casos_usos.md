@@ -82,6 +82,6 @@ Precondiciones:
 
     3.a Cliente no encontrado. Vuelve al paso 2.
 
-#### Postcondición:
+##### Postcondición:
 
 - Se visualiza la información completa del cliente (sin modificaciones).
