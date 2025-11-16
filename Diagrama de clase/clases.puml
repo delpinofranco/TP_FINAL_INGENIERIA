@@ -1,69 +1,82 @@
 @startuml
 
+
 class Material {
     + id: Int
     + nombre: String
     + cantidad: Int
-    + tipoMaterial: String
+    + tipo_material: String
     + espesor: Float
-    - actualizar_materiales(): void
-    -consultar_cantidad(): void
+
+    + actualizar_cantidad(nuevaCantidad: Int): void
+    + consultar_cantidad(): Int
 }
 
-class Chapa{
+class Chapa {
     + largo: Float
-    + tipoChapa: String
+    + tipo_chapa: String
 }
-class CañoCuadrado{
-    + lado_1 : Int
-    + lado_2 : Int
+class CañoCuadrado {
+    + lado_1: Int
+    + lado_2: Int
 }
-class CañoRedondo{
+class CañoRedondo {
     + diametro: Float
 }
-class Hierro{
+class Hierro {
     + diametro: Float
 }
-class Angulo{
+class Angulo {
     + ala: Float
 }
-class Planchuela{
-    + tipo : String
+class Planchuela {
+    + tipo: String
     + ancho: Float
 }
-class Perfil{
+class Perfil {
     + alto: Int
 }
-
 class Plegados {
     + tamaño: Float
 }
 
-class Persona{
+class Persona {
     + nombre: String
     + apellido: String
     + localidad: String
     + celular: String
-    + direccion : String
+    + direccion: String
+}
+
+class Cliente {
+    + id: Int
+    + trabajos: List<Trabajo>
+    + pagos: List<Pago>
+    + entregas: List<Entrega>
+
+    + agregar_trabajo(trabajo:Trabajo): void
+    + registrar_pago(pago:Pago): void
+    + recibir_entrega(entrega:Entrega): void
+    + consultar_trabajos(): List<Trabajo>
+    + consultar_pagos(): List<Pago>
+    + consultar_entregas(): List<Entrega>
+}
+
+class Proveedor {
+    + id: Int 
+    + email: String
+
+    + modificar_informacion(emailNuevo:String): void
+    + registrar_entrega(entrega:Entrega): void
 }
 
 class Entrega {
     + id: Int
     + fecha: Date
     + materiales: List<Material>
-}
 
-class Cliente{
-    + id: Int
-    + trabajos: List<Trabajo>
-    + pagos: List<Pago>
-    + entregas: List<Entrega>
-}
-
-class Proveedor {
-    + id: Int 
-    + email: String
-    - modificar_informacion(): void
+    + agregar_material(material:Material): void
+    + consultar_materiales(): List<Material>
 }
 
 class Trabajo {
@@ -75,11 +88,14 @@ class Trabajo {
     + fecha_ingreso: Date
     + fecha_entrega: Date
     + materiales: List<Material>
-    - modificar_trabajos(): void
-    - actualizar_precio(nuevoPrecio:Float): void
+
+    + modificar_trabajo(nuevoEstado:String): void
+    + actualizar_precio(nuevoPrecio:Float): void
+    + agregar_material(material:Material): void
+    + consultar_materiales(): List<Material>
 }
 
-class Pago{
+class Pago {
     + id: Int
     + descripcion: String
     + fecha: Date
@@ -87,43 +103,16 @@ class Pago{
     + importe: Float
 }
 
-class Transferencia{
-    + cbu : String
-    + banco : String
-    + titularCuenta : String
+class Transferencia {
+    + cbu: String
+    + banco: String
+    + titular_cuenta: String
 }
 
-class Efectivo{
+class Efectivo {
 }
 
-class Sistema {
-    + proveedores: List<Proveedor>
-    + materiales: List<Material>
-    + entregas: List<Entrega>
-    + clientes: List<Cliente>
 
-    + agregar_cliente(cliente:Cliente): void
-    + consultar_clientes(): void
-
-    - agregar_trabajo(trabajo:Trabajo): void
-    + consultar_trabajos(): void
-    - asociar_trabajo(trabajo:Trabajo,cliente:Cliente): void
-    
-    + registrar_pago(pago:Pago): void
-    
-    + asociar_pago(cliente:Cliente,pago:Pago): void
-
-    + registrar_proveedor(proveedor:Proveedor): void
-    + consultar_proveedores(): void
-
-    + registrar_material(material:Material): void
-    + consultar_materiales(): void
-    + asociar_material(trabajo:Trabajo,material:Material): void
-
-    + registrar_entrega(entrega:Entrega, proveedor:Proveedor): void
-    + asociar_entrega(cliente:Cliente,entrega:Entrega): void
-    + consultar_entrega(): void
-}
 
 Persona <|-- Cliente
 Persona <|-- Proveedor
@@ -137,7 +126,7 @@ Material <|-- Angulo
 Material <|-- Planchuela
 Material <|-- Perfil
 
-Material "0..*" -- "0..1" Proveedor : es provisto
+Material "0..*" -- "0..1" Proveedor : es_provisto
 
 Cliente "1" --O "0..*" Trabajo : tiene
 Trabajo "1" o-- "0..*" Material : utiliza
@@ -146,10 +135,8 @@ Cliente "1" -- "0..*" Entrega : recibe
 Proveedor "1" -- "0..*" Entrega : entrega
 Entrega "1" -- "0..*" Material : contiene
 
+Cliente "1" -- "0..*" Pago : realiza
 Pago <|-- Efectivo
 Pago <|-- Transferencia
-
-Cliente "1" -- "0..*" Pago : realiza
-Sistema o-- Cliente
 
 @enduml
