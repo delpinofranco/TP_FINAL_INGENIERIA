@@ -1,0 +1,25 @@
+@startuml
+
+
+actor Usuario
+participant "controlador:Sistema" as controlador
+participant "cp: <<Singleton>>RegistroDePagos" as registro
+
+== Registro de pago ==
+Usuario -> controlador: ingresar_informacion(tipo_pago, importe, fecha, estado, descripcion)
+activate controlador
+activate Usuario
+create nue_pago
+controlador -> nue_pago: registrar_pago(tipo_pago, importe, fecha, estado, descripcion)
+nue_pago --> controlador: "<<pago_creado>>"
+
+controlador -> registro: guardar_pago(nue_pago)
+activate registro
+registro --> controlador: "<<pago_registrado,  id_pago>>"
+deactivate registro
+
+controlador --> Usuario: "<<Registro exitoso,id_pago>>"
+deactivate controlador
+deactivate Usuario
+
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+
+actor Usuario
+participant "controlador:Sistema" as controlador
+participant "cp: <<Singleton>>RegistroDeTrabajos" as registro
+
+== Registro de trabajo ==
+Usuario -> controlador: ingresar_datos(nombre, cliente, fecha, descripcion, costo)
+create nue_trabajo
+controlador -> nue_trabajo: registrar_trabajo(nombre, cliente, fecha, descripcion, costo)
+nue_trabajo --> controlador: "<<trabajo_creado>>"
+
+controlador -> registro: guardar_trabajo(nue_trabajo)
+activate registro
+registro --> controlador: "<<trabajo_registrado>>"
+deactivate registro
+
+controlador --> Usuario: "<<Registro exitoso>>"
+deactivate controlador
+
+@enduml

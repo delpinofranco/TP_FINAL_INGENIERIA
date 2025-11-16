@@ -1,0 +1,57 @@
+@startuml
+
+(*) --> "Solicitud de trabajo"
+
+if "¿Cliente aprueba?" then
+    --> ["true"]"Registrar trabajo"
+else
+    -->["false"] "Cancelar proyecto"
+    --> (*)
+endif
+
+"Registrar trabajo" --> "Recibir material"
+
+if "¿Material completo?" then
+    --> ["true"] "Comenzar trabajo"
+    --> "Trabajo finalizado"
+    --> "Enviar a revisión"
+
+    if "¿Revisión aprobada?" then
+        --> ["true"] "Solicitar pago"
+
+        if "¿Pago realizado?" then
+            --> ["true"] "Entregar trabajo"
+            --> (*)
+        else
+            --> ["false"]"Evaluar días de demora"
+
+            if "¿Más de 35 días?" then
+                --> ["true"] "Aplicar recargo del 30%"
+                --> "Entregar trabajo"
+            else
+                --> ["false"]"Seguir esperando pago"
+            endif
+
+            if "¿Pasaron 90 días?" then
+                --> ["true"] "Cancelar trabajo (cliente pierde el trabajo)"
+                --> (*)
+            else
+                --> ["false"] "Pago realizado fuera de plazo"
+                --> "Entregar trabajo"
+            endif
+
+        endif
+
+    else
+        --> ["fasle"] "Comenzar trabajo"
+    endif
+
+else
+    --> ["false"]"Trabajo en espera"
+    --> "Esperar llegada de material"
+    --> "Recibir material"
+endif
+
+@enduml
+
+

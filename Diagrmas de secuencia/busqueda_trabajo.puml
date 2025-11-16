@@ -1,0 +1,43 @@
+@startuml
+
+' Las palabra entre signo de mayor y menor representa los retornos.
+actor Usuario
+participant "controlador:Sistema" as controlador
+participant "cp: <<Singleton>>RegistroDeTrabajos" as registroT
+participant "trabajo[i]DatosDelTrabajo" as iteradorT
+
+== Busqueda de trabajo ==
+
+Usuario -> controlador: ingresar_datos_trabajo(nomCliente, nomTrabajo)
+activate controlador
+
+' Primero verificamos si existe un trabajo del cliente
+loop "Para cada trabajo registrado"
+    controlador -> registroT: buscar_trabajo_por_nombre(nomCliente,nomTrabajo)
+    activate registroT
+
+    registroT -> iteradorT: get_nombre_cliente()
+    activate iteradorT
+    iteradorT --> registroT: "<<NombreCliente>>"
+    deactivate iteradorT
+   
+
+    registroT -> iteradorT: get_nombre_trabajo()
+    activate iteradorT
+    iteradorT --> registroT: "<<NombreTrabajo>>"
+    deactivate iteradorT
+
+   
+end
+alt trabajo_no_encontrado
+    registroT --> controlador: <<NULL>>
+    controlador --> Usuario: "<< trabajo no registrado>>"
+else trabajo_existente
+    registroT --> controlador: <<True>>
+    deactivate registroT
+    controlador --> Usuario: "<<Error: trabajo ya registrado para ese cliente>>"
+end
+
+
+
+@enduml

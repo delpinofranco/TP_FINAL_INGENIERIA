@@ -1,0 +1,25 @@
+@startuml
+actor Usuario
+participant "controlador:Sistema" as controlador
+participant "cp: <<Singleton>>RegistroDeClientes" as registro
+
+== Registro de cliente ==
+
+Usuario -> controlador: ingresar_datos(nom, apell, cel, loc, direc)
+activate controlador
+
+create nue_cliente
+
+controlador -> nue_cliente: registrar_cliente(nom, apell, cel, loc, direc)
+nue_cliente --> controlador: "<<cliente_creado>>"
+
+
+controlador -> registro: guardar_cliente()
+activate registro
+registro --> controlador: "<<cliente_registrado>>"
+deactivate registro
+
+controlador --> Usuario: "<<Registro exitoso>>"
+deactivate controlador 
+
+@enduml

@@ -1,0 +1,39 @@
+@startuml
+
+state DecisionMaterial <<choice>>
+state DecisionRevision <<choice>>
+state DecisionPago <<choice>>
+state c <<choice>>
+state TiempoEspera <<choice>>
+
+[*] --> SinTareasAsignadas
+
+SinTareasAsignadas --> Registrado : registrarTrabajo
+Registrado --> c : se_aprueba
+c --> Aprobado : trabajo_asignado
+c --> Cancelado : cancelacion_trabajo
+
+Aprobado --> DecisionMaterial
+DecisionMaterial --> EnEspera : falta_material
+EnEspera --> DecisionMaterial : llegaron_materiales
+DecisionMaterial --> EnProceso : materiales_disponibles
+
+EnProceso --> EnRevision : trabajo_listo_para_revision
+
+EnRevision --> DecisionRevision
+DecisionRevision --> Terminado : revision_exitosa
+DecisionRevision --> EnProceso : revision_falla
+
+
+
+Terminado --> DecisionPago
+DecisionPago --> Entregado : pago_realizado
+DecisionPago --> EntregaPendiente : pendiente_pago
+EntregaPendiente --> TiempoEspera : pasaron_90_dias
+TiempoEspera --> Cancelado: cancelar_por_incumplimiento
+TiempoEspera --> Entregado : pago_no_realizado_en_plazo
+
+Entregado --> [*]
+Cancelado --> [*]
+
+@enduml

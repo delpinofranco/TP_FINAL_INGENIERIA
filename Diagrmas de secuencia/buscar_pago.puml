@@ -1,0 +1,33 @@
+@startuml
+
+actor Usuario
+participant "controlador:Sistema" as controlador
+participant "cp: <<Singleton>>RegistroDePagos" as registro
+participant "pago[i]:DatosDelPago" as iterador
+
+== Búsqueda de Pago ==
+
+Usuario -> controlador: ingresar_datos(id_pago)
+activate controlador
+
+loop "Para cada pago"
+    controlador -> registro: buscar_pago(id_pago)
+    activate registro
+
+    registro -> iterador: get_id()
+    activate iterador
+    iterador --> registro: "<<id>>"
+    deactivate iterador
+
+    deactivate registro
+end
+
+alt pago_no_encontrado
+    registro --> controlador: <<NULL>>
+else pago_existente
+    registro --> controlador: <<True>>
+end
+
+deactivate controlador
+
+@enduml

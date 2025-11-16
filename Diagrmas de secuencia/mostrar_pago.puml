@@ -1,0 +1,58 @@
+@startuml
+actor Usuario
+participant "controlador:Sistema" as controlador
+participant "cp: <<Singleton>>RegistroDePagos" as registroPagos
+participant "pago[i]:DatosDelPago" as iterador
+participant "obj:DatosDePago" as datos
+
+== Buscar Pago ==
+
+Usuario -> controlador: buscar_pago(id_pago)
+activate controlador
+
+controlador -> registroPagos: buscar_pago(id_pago)
+activate registroPagos
+
+loop "Por cada pago encontrado"
+    registroPagos -> iterador: get_id()
+    activate iterador
+    iterador --> registroPagos: "<<id>>"
+    deactivate iterador
+end
+
+alt "pago no encontrado"
+    registroPagos --> controlador: "<<Null>>"
+    deactivate registroPagos
+
+    controlador --> Usuario: "<<pago no encontrado>>"
+   
+
+else "pago encontrado"
+    registroPagos --> controlador: "<<obj:DatosDePago>>"
+    deactivate registroPagos
+
+    controlador -> datos: get_tipo_de_pago()
+    activate datos 
+    datos --> controlador: "<<tipo de pago>>"
+    deactivate datos
+    
+    controlador -> datos: get_fecha()
+    activate datos 
+    datos --> controlador: "<<fecha>>"
+    deactivate datos
+    
+    controlador -> datos: get_descripcion()
+    activate datos
+    datos --> controlador: "<<descripcion>>"
+    deactivate datos
+    
+    controlador -> datos: get_monto()
+    activate datos
+    datos --> controlador: "<<monto>>"
+    deactivate datos
+
+    controlador --> Usuario: "<<datos de la venta>>"
+    deactivate controlador
+end
+
+@enduml

@@ -1,0 +1,38 @@
+@startuml
+
+actor Usuario
+participant "controlador:Sistema" as controlador
+participant "cp: <<Singleton>>RegistroDeClientes" as registro
+participant "cliente[i]DatosDelCliente" as iterador
+
+== Búsqueda de cliente ==
+
+Usuario -> controlador: ingresar_datos(nom, apell)
+activate controlador
+
+loop "Para cada cliente"
+    controlador -> registro: buscar_cliente(nom, apell)
+    activate registro
+
+    registro -> iterador: get_nombre()
+    activate iterador
+    iterador --> registro: "<<Nombre>>"
+    deactivate iterador
+
+    registro -> iterador: get_apellido()
+    activate iterador
+    iterador --> registro: "<<Apellido>>"
+    deactivate iterador
+
+    deactivate registro
+end
+
+
+alt cliente_no_encontrado
+        registro --> controlador: <<NULL>>
+    else cliente_existente
+        registro --> controlador: <<True>>
+
+    end
+deactivate controlador
+@enduml
